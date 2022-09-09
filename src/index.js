@@ -6,37 +6,115 @@ app.use(express.json())
 app.use(express.static('public'))
 app.use(express.urlencoded({extended:true}))
 
+const { promises: fs } = require("fs");
+
 // Routers
 const productos = Router()
 const carrito = Router()
 
 // Rutas alojadas en routers
 app.use('/api/productos',productos)
-app.use('api/carrito',carrito)
+app.use('/api/carrito',carrito)
 
 // Horario de ahora
 const now = Date.now()
 
+// ****************************************************************************
+// ----- Inicio de clase contenedor para manejo de archivos en filesystem -----
+// ****************************************************************************
+class Contenedor {
+    constructor(ruta) {
+      this.ruta = ruta;
+    }
+    async save(nuevoObjeto) {
+      // obtener todos los datos que ya existen en el archivo
+      const objetos = await this.getAll();
+    //   console.log(objetos)
+      let newId;
+      if (objetos.length == 0) {
+        newId = 1;
+      } else {
+        const ultimoId = parseInt(objetos[objetos.length - 1].id);
+        newId = ultimoId + 1;
+      }
+      // agregar el nuevo objeto al array que existe en el archivo
+      objetos.push({...nuevoObjeto});
+      // guardar el nuevo array con el nuevo objeto agregado
+      try {
+        await fs.writeFile(this.ruta, JSON.stringify(objetos, null, 2));
+        return newId;
+      } catch (error) {
+        throw new Error(`Error al guardar: ${error}`);
+      }
+    }
+    async getById(id) {
+      // obtener todos los datos que ya existen en el archivo
+      const objetos = await this.getAll();
+      let itemId = objetos.filter((item) => item.id === id);
+      if (itemId.length > 0) {
+          console.log(itemId)
+        return itemId;
+      } else {
+        console.log("No se encontro un item con dicho id");
+      }
+    }
+    async getAll() {
+      try {
+        const objetos = await fs.readFile(this.ruta, "utf-8");
+        return JSON.parse(objetos);
+      } catch (error) {
+        return [];
+      }
+    }
+    async deleteById(id) {
+      // obtener todos los datos que ya existen en el archivo
+      const objetos = await this.getAll();
+      // filtrar los datos para identificar el objeto a eliminar y eliminarlo
+      const nuevoObjeto = objetos.filter((elemento) => elemento.id !== id);
+      if (nuevoObjeto.length == objetos.length) {
+        console.log("No se encontro un item con dicho id para eliminar");
+      } else {
+      // guardar el nuevo array con el nuevo objeto agregado
+      try {
+        await fs.writeFile(this.ruta, JSON.stringify(nuevoObjeto, null, 2));
+      } catch (error) {
+        throw new Error(`Error al guardar: ${error}`);
+      }
+    }
+    }
+    async deleteAll() {
+      fs.writeFile("productos.txt","[]", function (err) {
+        if (err) throw err;
+      });
+    }
+  }
+  const manejoArchivos = new Contenedor("./public/productos.txt");
+// *************************************************************************
+// ----- Fin de clase contenedor para manejo de archivos en filesystem -----
+// *************************************************************************
 
-// Array de productos agregados
+
+// Array de productos agregados y carrito
 let listaProductos = [
     {
         'id':1,
-        'timestamp' : `Horario ${now}`, // Agregar  
+        'timestamp' : `Horario ${now}`,
         'nombre':'Shampoo',
-        'descripcion': 'descripcion', // Agregar 
-        'codigo': 1234556, // Agregar 
-        'foto': 'URL', // Agregar 
+        'descripcion': 'descripcion', 
+        'codigo': 1234556, 
+        'foto': 'URL',
         'precio':'5USD',
-        'stock': 50 // Agregar 
+        'stock': 50 
     }]
 
 // constantes de admin y user para poder acceder a los endpoints correspondientes
 const administrador = true
 const user = false
 
-// inicio de endpoints de productos
-
+// *********************************************
+//  ----- inicio de endpoints de productos -----
+// *********************************************
+  
 // Me permite listar todos los productos disponibles o un producto por su id (disponible para usuarios y administradores)
 productos.get('/:id?', (req,res)=>{
     if (administrador || user) {
@@ -61,8 +139,8 @@ productos.get('/:id?', (req,res)=>{
 productos.post('/',(req,res,next) => {
     // Incorpora productos al listado siempre que administrador sea true
     if (administrador){
-        const {nombre ,precio} = req.body
-        if(!nombre || !precio){
+        const {nombre,descripcion,foto,precio, stock} = req.body
+        if(!nombre || !precio || !descripcion || !foto || !stock){
         res.status(400).send({error:"Producto no guardado por falta de datos"})
         }
         next()
@@ -70,11 +148,20 @@ productos.post('/',(req,res,next) => {
         res.status(400).send({error:-1,descripcion:"ruta api/productos metodo:POST no autorizada" })
     }
 },(req, res) => {
-            const {nombre ,precio} = req.body
-            if(nombre && precio){
-                const id = Number(listaProductos[listaProductos.length-1].id) + 1
-            listaProductos.push({nombre,precio,id})
-            res.send('producto guardado con exito')
+            const {nombre,descripcion,codigo,foto,precio, stock} = req.body
+            if(nombre && descripcion && codigo && foto && precio && stock){
+                const timestamp = Date.now()
+                const productsLength = listaProductos.length
+                // Si el array de productos esta vacio, el condicional asignara la primera id y pushea la informacion
+                if (productsLength < 1){
+                    const id = 1
+                    listaProductos.push({id,timestamp,nombre,descripcion,codigo,foto,precio, stock})
+                    res.send('producto guardado con exito')
+                } else {
+                    const id = Number(listaProductos[listaProductos.length-1].id) + 1
+                    listaProductos.push({id,timestamp,nombre,descripcion,codigo,foto,precio, stock})
+                    res.send('producto guardado con exito')
+                }
             }
     }
 )
@@ -82,10 +169,10 @@ productos.post('/',(req,res,next) => {
 productos.put('/:id',(req,res) => {
     if(administrador){
         const id = Number(req.params.id)
-        const {nombre,precio} = req.body;
+        const {nombre ,precio, timestamp, descripcion, codigo, foto , stock} = req.body;
         const index = listaProductos.findIndex(producto=>producto.id === id)
         if (index >= 0 ){
-            listaProductos[index] = {nombre,precio, id}
+            listaProductos[index] = {nombre ,precio, timestamp, descripcion, codigo, foto , stock}
             res.send(listaProductos[index])
         } else {
             res.status(404).send({error:"Producto no encontrado"})
@@ -112,8 +199,80 @@ productos.delete('/:id',(req,res) => {
         res.status(400).send({error:-1,descripcion:"ruta api/productos/:id metodo:DELETE no autorizada" })
     }
 })
-// Fin de endpoints productos
 
+// *********************************************
+//  -----  Fin de endpoints de productos -----
+// *********************************************
+
+// ---------------------------------------------
+
+// *********************************************
+//  -----  inicio de endpoints del carrito -----
+// *********************************************
+
+// Crea un carrito y devuelve su id
+carrito.post('/',(req,res)=> {
+    if(administrador || user){
+
+        // Inicio de mantenimiento
+        const cartLengthPromise = manejoArchivos.getAll()
+        cartLengthPromise.then((res)=>{
+            return res
+        }).then((res)=>{
+            const cartLengthObjects = res
+            const cartLength = res.length 
+            
+        })
+        if (cartLength < 1){
+            const id = 1
+            const carritoUser = manejoArchivos.save([
+                {
+                    id:id,
+                    timestamp: `Horario ${now}`,
+                    productos: listaProductos 
+                }
+            ])
+            return carritoUser
+        } else {
+            const id = Number(cartLengthObjects.length) + 1
+            const carritoUser = manejoArchivos.save([
+                {
+                    id:id,
+                    timestamp: `Horario ${now}`,
+                    productos: listaProductos 
+                }
+            ])
+        return carritoUser
+    }
+        // Fin de mantenimiento
+    } 
+})
+carrito.delete('/:id',(req,res)=>{
+    // Vacia un carrito y lo elimina
+    if(administrador || user){
+
+    }
+})
+carrito.get('/:id/productos',(req,res)=>{
+    // Me permite listar todos los productos guardados en el carrito
+    if(administrador || user){
+
+    }
+})
+carrito.post('/:id/productos',(req,res)=>{
+    // Para incorporar productos al carrito por su id de producto
+    if(administrador || user){
+
+    }
+})
+carrito.delete('/:id/productos/:id_prod',(req,res)=>{
+    // Eliminar un producto del carrito por su id de carrito y de producto
+    if(administrador || user){
+    }
+})
+// ******************************************
+//  ----- Fin de endpoints del carrito -----
+// ******************************************
 
 const PORT = 8080 || process.env.PORT
 app.listen(PORT, ()=> {
