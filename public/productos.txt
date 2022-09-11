@@ -1,0 +1,306 @@
+[
+  {
+    "0": {
+      "id": 1,
+      "timestamp": "Horario 1662863112279",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863112279",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 1
+  },
+  {
+    "0": {
+      "id": 2,
+      "timestamp": "Horario 1662863139202",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863139202",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 2
+  },
+  {
+    "0": {
+      "id": 3,
+      "timestamp": "Horario 1662863157504",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863157504",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 3
+  },
+  {
+    "0": {
+      "id": 4,
+      "timestamp": "Horario 1662863174684",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863174684",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 4
+  },
+  {
+    "0": {
+      "id": 5,
+      "timestamp": "Horario 1662863186475",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863186475",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 5
+  },
+  {
+    "0": {
+      "id": 6,
+      "timestamp": "Horario 1662863186475",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863186475",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 6
+  },
+  {
+    "0": {
+      "id": 7,
+      "timestamp": "Horario 1662863186475",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863186475",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 7
+  },
+  {
+    "0": {
+      "id": 8,
+      "timestamp": "Horario 1662863186475",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863186475",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 8
+  },
+  {
+    "0": {
+      "id": 9,
+      "timestamp": "Horario 1662863186475",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863186475",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 9
+  },
+  {
+    "0": {
+      "id": 10,
+      "timestamp": "Horario 1662863214172",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863214172",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 10
+  },
+  {
+    "0": {
+      "id": 11,
+      "timestamp": "Horario 1662863214172",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863214172",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 11
+  },
+  {
+    "0": {
+      "id": 12,
+      "timestamp": "Horario 1662863262839",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863262839",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 12
+  },
+  {
+    "0": {
+      "id": 13,
+      "timestamp": "Horario 1662863281621",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863281621",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 13
+  },
+  {
+    "0": {
+      "id": 14,
+      "timestamp": "Horario 1662863294654",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863294654",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 14
+  },
+  {
+    "0": {
+      "id": 15,
+      "timestamp": "Horario 1662863314213",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863314213",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 15
+  },
+  {
+    "0": {
+      "id": 16,
+      "timestamp": "Horario 1662863314213",
+      "productos": [
+        {
+          "id": 1,
+          "timestamp": "Horario 1662863314213",
+          "nombre": "Shampoo",
+          "descripcion": "descripcion",
+          "codigo": 1234556,
+          "foto": "URL",
+          "precio": "5USD",
+          "stock": 50
+        }
+      ]
+    },
+    "id": 16
+  }
+]
