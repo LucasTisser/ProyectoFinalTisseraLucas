@@ -52,7 +52,7 @@ class Contenedor {
     const objetos = await this.getAll();
     let itemId = objetos.filter((item) => item.id === id);
     if (itemId.length > 0) {
-      console.log(itemId);
+      // console.log(itemId);
       return itemId;
     } else {
       console.log("No se encontro un item con dicho id");
@@ -294,22 +294,43 @@ carrito.post("/", async (req, res) => {
     }    
   } catch {
     res.status(400).send("bad request")
+  }  
+});
+// Vacia un carrito y lo elimina
+carrito.delete("/:id", async (req, res) => {
+  try{
+  if (administrador || user) {
+      const id = Number(req.params.id)
+      const CartArray = await manejoArchivos.getById(id)
+      if (id === CartArray[0].id){
+      manejoArchivos.deleteById(id)
+      res.send(`Se elimino el carrito N°${id}`)
+      }
+    }
+  } catch {
+    res.status(400).send("bad request")
   }
-    // // Fin de mantenimiento
+});
+// Me permite listar todos los productos guardados en el carrito
+carrito.get("/:id/productos", async (req, res) => {
+  try{
+  if (administrador || user) {
+    const idCart = Number(req.params.id)
+    const cartProducts = await manejoArchivos.getById(idCart)
+    if(idCart === cartProducts[0].id){
+        cartProducts.forEach(product => {
+          const productsCart = product[0].productos
+        res.send(productsCart) 
+      });
+    } 
+    }
+  } catch {
+    res.status(400).send("bad request")
+  }
   
 });
-carrito.delete("/:id", (req, res) => {
-  // Vacia un carrito y lo elimina
-  if (administrador || user) {
-  }
-});
-carrito.get("/:id/productos", (req, res) => {
-  // Me permite listar todos los productos guardados en el carrito
-  if (administrador || user) {
-  }
-});
+// Para incorporar productos al carrito por su id de producto
 carrito.post("/:id/productos", (req, res) => {
-  // Para incorporar productos al carrito por su id de producto
   if (administrador || user) {
   }
 });
