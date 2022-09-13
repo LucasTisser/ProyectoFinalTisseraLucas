@@ -1,69 +1,22 @@
 [
   {
-    "0": {
-      "id": 1,
-      "timestamp": "Horario 1662950420344",
-      "productos": [
-        {
-          "id": 1,
-          "timestamp": "Horario 1662950420344",
-          "nombre": "Shampoo",
-          "descripcion": "descripcion",
-          "codigo": 1234556,
-          "foto": "URL",
-          "precio": "5USD",
-          "stock": 50
-        },
-        {
-          "id": 2,
-          "timestamp": "Horario 1662950420344",
-          "nombre": "jabon",
-          "descripcion": "descripcion",
-          "codigo": 1234556,
-          "foto": "URL",
-          "precio": "5USD",
-          "stock": 50
-        }
-      ]
-    },
-    "id": 1
+    "id": 1,
+    "timestamp": 1663029749842,
+    "nombre": "jabon",
+    "descripcion": "descr9999",
+    "codigo": "12354999",
+    "foto": "puto233333",
+    "precio": "41",
+    "stock": "12"
   },
   {
-    "0": {
-      "id": 2,
-      "timestamp": "Horario 1662951309087",
-      "productos": [
-        {
-          "id": 1,
-          "timestamp": "Horario 1662951309087",
-          "nombre": "Shampoo",
-          "descripcion": "descripcion",
-          "codigo": 1234556,
-          "foto": "URL",
-          "precio": "5USD",
-          "stock": 50
-        }
-      ]
-    },
-    "id": 2
-  },
-  {
-    "0": {
-      "id": 3,
-      "timestamp": "Horario 1662951381321",
-      "productos": [
-        {
-          "id": 1,
-          "timestamp": "Horario 1662951381321",
-          "nombre": "Shampoo",
-          "descripcion": "descripcion",
-          "codigo": 1234556,
-          "foto": "URL",
-          "precio": "5USD",
-          "stock": 50
-        }
-      ]
-    },
-    "id": 3
+    "id": 2,
+    "timestamp": 1663029755730,
+    "nombre": "mate",
+    "descripcion": "descr9999",
+    "codigo": "12354999",
+    "foto": "puto233333",
+    "precio": "41",
+    "stock": "12"
   }
 ]

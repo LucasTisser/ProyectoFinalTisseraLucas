@@ -1,4 +1,5 @@
 // Configuracion inicial en express de node.js
+const { time } = require("console");
 const express = require("express");
 const { Router } = express;
 const app = express();
@@ -52,7 +53,6 @@ class Contenedor {
     const objetos = await this.getAll();
     let itemId = objetos.filter((item) => item.id === id);
     if (itemId.length > 0) {
-      // console.log(itemId);
       return itemId;
     } else {
       console.log("No se encontro un item con dicho id");
@@ -88,24 +88,12 @@ class Contenedor {
     });
   }
 }
-const manejoArchivos = new Contenedor("./public/productos.txt");
+const manejoArchivosCarrito = new Contenedor("./public/Carritos.txt");
+const manejoArchivosProductos = new Contenedor("./public/productos.txt");
+
 // *************************************************************************
 // ----- Fin de clase contenedor para manejo de archivos en filesystem -----
 // *************************************************************************
-
-// Array de productos agregados y carrito
-let listaProductos = [
-  {
-    id: 1,
-    timestamp: `Horario ${now}`,
-    nombre: "Shampoo",
-    descripcion: "descripcion",
-    codigo: 1234556,
-    foto: "URL",
-    precio: "5USD",
-    stock: 50,
-  },
-];
 
 // constantes de admin y user para poder acceder a los endpoints correspondientes
 const administrador = true;
@@ -116,36 +104,39 @@ const user = false;
 // *********************************************
 
 // Me permite listar todos los productos disponibles o un producto por su id (disponible para usuarios y administradores)
-productos.get("/:id?", (req, res) => {
+productos.get("/:id?", async (req, res) => {
+  try{
   if (administrador || user) {
-    const id = Number(req.params.id);
-    if (id > 0) {
-      // Muestra el producto pedido por su id
-      const productoBuscado = listaProductos.filter(
-        (producto) => producto.id === id
-      );
-      if (listaProductos.length < id) {
-        res.status(404).send("No se ha encontrado un producto con dicho ID");
+      const id = Number(req.params.id);
+      if (id > 0) {
+        // Muestra el producto pedido por su id
+        const productoBuscado = await manejoArchivosProductos.getById(id)
+        const productList = await manejoArchivosProductos.getAll()
+        if (productList.length < id) {
+          res.status(404).send("No se ha encontrado un producto con dicho ID");
+        } else {
+          res.send(productoBuscado);
+        }
       } else {
-        res.send(productoBuscado);
+        // Devuelve todos los productos disponibles
+        const productList = await manejoArchivosProductos.getAll()
+        res.send(productList);
       }
     } else {
-      // Devuelve todos los productos disponibles
-      res.send(listaProductos);
+      res
+        .status(400)
+        .send({
+          error: -1,
+          descripcion: "ruta api/productos/id? metodo:GET no autorizada",
+        });
     }
-  } else {
-    res
-      .status(400)
-      .send({
-        error: -1,
-        descripcion: "ruta api/productos/id? metodo:GET no autorizada",
-      });
+  } catch{
+    res.status(400).send("Bad Request")
   }
+  
 });
 // Para incorporar productos al listado (disponible para administradores)
-productos.post(
-  "/",
-  (req, res, next) => {
+productos.post("/",(req, res, next) => {
     // Incorpora productos al listado siempre que administrador sea true
     if (administrador) {
       const { nombre, descripcion, foto, precio, stock } = req.body;
@@ -164,85 +155,105 @@ productos.post(
         });
     }
   },
-  (req, res) => {
-    const { nombre, descripcion, codigo, foto, precio, stock } = req.body;
-    if (nombre && descripcion && codigo && foto && precio && stock) {
-      const timestamp = Date.now();
-      const productsLength = listaProductos.length;
-      // Si el array de productos esta vacio, el condicional asignara la primera id y pushea la informacion
-      if (productsLength < 1) {
-        const id = 1;
-        listaProductos.push({
-          id,
-          timestamp,
-          nombre,
-          descripcion,
-          codigo,
-          foto,
-          precio,
-          stock,
-        });
-        res.send("producto guardado con exito");
-      } else {
-        const id = Number(listaProductos[listaProductos.length - 1].id) + 1;
-        listaProductos.push({
-          id,
-          timestamp,
-          nombre,
-          descripcion,
-          codigo,
-          foto,
-          precio,
-          stock,
-        });
-        res.send("producto guardado con exito");
+   async (req, res) => {
+    try{
+      const { nombre, descripcion, codigo, foto, precio, stock } = req.body;
+      if (nombre && descripcion && codigo && foto && precio && stock) {
+        const timestamp = Date.now();
+        const productsLength = await manejoArchivosProductos.getAll()
+        console.log(productsLength)
+        // Si el array de productos esta vacio, el condicional asignara la primera id y pushea la informacion
+        if (productsLength < 1) {
+          const id = 1;
+          const productToSubmit = 
+          {
+            id: id,
+            timestamp:timestamp,
+            nombre:nombre,
+            descripcion:descripcion,
+            codigo:codigo,
+            foto:foto,
+            precio:precio,
+            stock:stock,
+          };
+          const productSubmit = await manejoArchivosProductos.save(productToSubmit)
+          res.send("producto guardado con exito");
+        } else {
+          const id = Number(productsLength[productsLength.length - 1].id) + 1;
+          const productToSubmit = 
+          {
+            id: id,
+            timestamp:timestamp,
+            nombre:nombre,
+            descripcion:descripcion,
+            codigo:codigo,
+            foto:foto,
+            precio:precio,
+            stock:stock,
+          };
+          const productSubmit = await manejoArchivosProductos.save(productToSubmit)
+          res.send("producto guardado con exito");
+        }
       }
+    } catch {
+      res.status(400).send("Bad Request")
     }
   }
 );
 // Actualiza un producto por su id (disponible para administradores)
-productos.put("/:id", (req, res) => {
+productos.put("/:id",async (req, res) => {
+// en mantenimiento, hay que sobreescribir la informacion con fs
+  try{
   if (administrador) {
-    const id = Number(req.params.id);
-    const { nombre, precio, timestamp, descripcion, codigo, foto, stock } =
-      req.body;
-    const index = listaProductos.findIndex((producto) => producto.id === id);
-    if (index >= 0) {
-      listaProductos[index] = {
-        nombre,
-        precio,
-        timestamp,
-        descripcion,
-        codigo,
-        foto,
-        stock,
-      };
-      res.send(listaProductos[index]);
+      const id = Number(req.params.id);
+      const { nombre, precio, timestamp, descripcion, codigo, foto, stock } =
+        req.body;
+      let index = await manejoArchivosProductos.getById(id)
+      // console.log(index[0].id)
+
+      if (index[0].id >= 1) {
+        let productToPut = 
+        {
+          nombre:nombre,
+          precio:precio,
+          timestamp:timestamp,
+          descripcion:descripcion,
+          codigo:codigo,
+
+          foto:foto,
+          stock:stock,
+        };
+      productToPut = index[0]
+        res.send(index[0]);
+      } else {
+        res.status(404).send({ error: "Producto no encontrado" });
+      }
     } else {
-      res.status(404).send({ error: "Producto no encontrado" });
+      res
+        .status(400)
+        .send({
+          error: -1,
+          descripcion: "ruta api/productos/:id metodo:PUT no autorizada",
+        });
     }
-  } else {
-    res
-      .status(400)
-      .send({
-        error: -1,
-        descripcion: "ruta api/productos/:id metodo:PUT no autorizada",
-      });
+  } catch{
+    res.status(400).send("Bad Request")
   }
+  // en mantenimiento, hay que sobreescribir la informacion con fs
 });
 // Borra un producto por su id (disponible para administradores)
-productos.delete("/:id", (req, res) => {
+productos.delete("/:id", async (req, res) => {
+  try{
   if (administrador) {
     // Elimina un producto segun su id
     const id = Number(req.params.id);
     // filtrar los datos para identificar el objeto a eliminar y eliminarlo
-    let listaFiltrada = listaProductos.filter((elemento) => elemento.id !== id);
-    if (listaFiltrada.length == listaProductos.length) {
-      res.status(404).send({ error: "Producto no encontrado" });
+    const productsLength = await manejoArchivosProductos.getAll()
+    if (productsLength.length >= id){
+    await manejoArchivosProductos.deleteById(id)
+      res.send("Producto Eliminado")
     } else {
-      // guardar el nuevo array con el nuevo objeto agregado
-      listaProductos = listaFiltrada;
-      res.send("Elemento eliminado");
+      res.send("No se encuentra este producto para eliminar")
     }
   } else {
     res
@@ -251,7 +262,11 @@ productos.delete("/:id", (req, res) => {
         error: -1,
         descripcion: "ruta api/productos/:id metodo:DELETE no autorizada",
       });
+  }  
+  } catch{
+    res.status(400).send("Bad Request")
   }
+  
 });
 
 // *********************************************
@@ -268,25 +283,24 @@ productos.delete("/:id", (req, res) => {
 carrito.post("/", async (req, res) => {
   try{
     if (administrador || user) {
-      // Inicio de mantenimiento
-      const cart = await manejoArchivos.getAll();
+      const cart = await manejoArchivosCarrito.getAll();
+      
       if (cart.length < 1) {
         const id = 1;
-        const carritoUser = manejoArchivos.save([
+        
+        const carritoUser = manejoArchivosCarrito.save([
           {
             id: id,
             timestamp: `Horario ${now}`,
-            productos: listaProductos,
           },
         ]);
         res.send(carritoUser)
       } else {
         const id = Number(cart.length) + 1;
-        const carritoUser = manejoArchivos.save([
+        const carritoUser = manejoArchivosCarrito.save([
           {
             id: id,
             timestamp: `Horario ${now}`,
-            productos: listaProductos,
           },
         ]);
         res.send(carritoUser)
@@ -301,10 +315,12 @@ carrito.delete("/:id", async (req, res) => {
   try{
   if (administrador || user) {
       const id = Number(req.params.id)
-      const CartArray = await manejoArchivos.getById(id)
-      if (id === CartArray[0].id){
-      manejoArchivos.deleteById(id)
+      const CartToDelete = await manejoArchivosCarrito.getById(id)
+      if (CartToDelete){
+      manejoArchivosCarrito.deleteById(id)
       res.send(`Se elimino el carrito N°${id}`)
+      } else {
+        res.send("No existe el carrito")
       }
     }
   } catch {
@@ -316,7 +332,7 @@ carrito.get("/:id/productos", async (req, res) => {
   try{
   if (administrador || user) {
     const idCart = Number(req.params.id)
-    const cartProducts = await manejoArchivos.getById(idCart)
+    const cartProducts = await manejoArchivosCarrito.getById(idCart)
     if(idCart === cartProducts[0].id){
         cartProducts.forEach(product => {
           const productsCart = product[0].productos
@@ -330,9 +346,33 @@ carrito.get("/:id/productos", async (req, res) => {
   
 });
 // Para incorporar productos al carrito por su id de producto
-carrito.post("/:id/productos", (req, res) => {
-  if (administrador || user) {
+carrito.post("/:id/productos", async (req, res) => {
+  try{
+    // MANTENIMIENTO
+  // if (administrador || user) {
+    const idCart = Number(req.params.id)
+    const {id} = req.body
+// producto para añadir
+    const productToAdd = await manejoArchivosProductos.getById(id)
+    const objetsLength = await manejoArchivosProductos.getAll()
+    // console.log(objetsLength)
+    if(objetsLength.length >= id){
+      // const cart = await manejoArchivosCarrito.getById(idCart)
+      const carts = await manejoArchivosCarrito.getAll()
+      res.send()
+    }
+
+  //   if (idProductToAdd > objetsLength.length){
+  //     res.send("El producto no existe")
+  //   } else {
+  //     res.send("Producto añadido")
+  //   }
+  // }
+    // MANTENIMIENTO
+  } catch {
+    res.status(400).send("bad request")
   }
+
 });
 carrito.delete("/:id/productos/:id_prod", (req, res) => {
   // Eliminar un producto del carrito por su id de carrito y de producto
