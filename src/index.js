@@ -1,5 +1,4 @@
 // Configuracion inicial en express de node.js
-const { time } = require("console");
 const express = require("express");
 const { Router } = express;
 const app = express();
@@ -88,8 +87,8 @@ class Contenedor {
     });
   }
 }
-const manejoArchivosCarrito = new Contenedor("./public/Carritos.txt");
-const manejoArchivosProductos = new Contenedor("./public/productos.txt");
+const manejoArchivosCarrito = new Contenedor("./public/Carritos.json");
+const manejoArchivosProductos = new Contenedor("./public/productos.json");
 
 // *************************************************************************
 // ----- Fin de clase contenedor para manejo de archivos en filesystem -----
