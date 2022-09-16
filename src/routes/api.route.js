@@ -1,14 +1,13 @@
-
-const { Router } =require("express");
-const apiRouter = Router()
-// Routers
-const { productosRouter } = require('./productos.route')
-const { carritosRouter } = require('./carritos.route')
+const { Router } = require("express");
+const { productsRouter } = require("./productos.route");
+const { cartsRouter } = require("./carritos.route");
+const apiRouter = Router();
 
 // Rutas alojadas en routers
-apiRouter.use("/productos", productosRouter);
-apiRouter.use("/carritos", carritosRouter);
+apiRouter.use("/productos", productsRouter);
+apiRouter.use("/carritos", cartsRouter);
 
+// apiRouter
 module.exports = {
-    apiRouter
-}
+  apiRouter,
+};
