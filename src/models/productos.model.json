@@ -1,0 +1,46 @@
+{
+  "nextId": 6,
+  "productsList": [
+    {
+      "nombre": "Jabon",
+      "descripcion": "Dove",
+      "codigo": "128012831724",
+      "stock": "50",
+      "foto": "JabonDoveFoto",
+      "precio": "3USD",
+      "id": 1,
+      "timeStamp": 1663304389102
+    },
+    {
+      "nombre": "Pasta Dental",
+      "descripcion": "Colgate",
+      "codigo": "34537232",
+      "stock": "25",
+      "foto": "PastaDentalColgateFoto",
+      "precio": "2USD",
+      "id": 2,
+      "timeStamp": 1663304442949
+    },
+    {
+      "nombre": "Shampoo",
+      "descripcion": "Pantenne",
+      "codigo": "124115212",
+      "stock": "30",
+      "foto": "ShampooPantenneFoto",
+      "precio": "2USD",
+      "id": 3,
+      "timeStamp": 1663304501498
+    },
+    {
+      "nombre": "Cepillo de dientes",
+      "descripcion": "Colgate",
+      "codigo": "12315456",
+      "stock": "20",
+      "foto": "CepilloColgateFoto",
+      "precio": "1.5USD",
+      "id": 4,
+      "timeStamp": 1663728905118,
+      "administrador": "LucasTissera"
+    }
+  ]
+}

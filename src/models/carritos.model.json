@@ -1,0 +1,25 @@
+{
+  "nextId": 8,
+  "cartsList": [
+    {
+      "id": 1,
+      "timestamp": 1663726353597,
+      "products": []
+    },
+    {
+      "id": 2,
+      "timestamp": 1663726364837,
+      "products": []
+    },
+    {
+      "id": 3,
+      "timestamp": 1663726365772,
+      "products": []
+    },
+    {
+      "id": 4,
+      "timestamp": 1663729143981,
+      "products": []
+    }
+  ]
+}
