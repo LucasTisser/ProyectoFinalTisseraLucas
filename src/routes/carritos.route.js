@@ -1,8 +1,8 @@
 const { Router } = require("express");
 const { cartModel } = require("../models/carritos.model");
 const cartsRouter = Router();
-
 const myCartsModel = new cartModel();
+
 
 // Crea un carrito y devuelve su id
 cartsRouter.post("/", async (req, res) => {
@@ -17,41 +17,38 @@ cartsRouter.post("/", async (req, res) => {
     res.status(400).send("bad request" + err);
   }
 });
-// Vacia un carrito y lo elimina
-// cartsRouter.delete("/:id", async (req, res) => {
-//     try{
-//     if (administrador || user) {
-//         const id = Number(req.params.id)
-//         const CartToDelete = await manejoArchivosCarrito.getById(id)
-//         if (CartToDelete){
-//         manejoArchivosCarrito.deleteById(id)
-//         res.send(`Se elimino el carrito N°${id}`)
-//         } else {
-//           res.send("No existe el carrito")
-//         }
-//       }
-//     } catch {
-//       res.status(400).send("bad request")
-//     }
-//   });
-// // Me permite listar todos los productos guardados en el carrito
-// cartsRouter.get("/:id/productos", async (req, res) => {
-//     try{
-//     if (administrador || user) {
-//       const idCart = Number(req.params.id)
-//       const cartProducts = await manejoArchivosCarrito.getById(idCart)
-//       if(idCart === cartProducts[0].id){
-//           cartProducts.forEach(product => {
-//             const productsCart = product[0].productos
-//           res.send(productsCart)
-//         });
-//       }
-//       }
-//     } catch {
-//       res.status(400).send("bad request")
-//     }
 
-//   });
+// Vacia un carrito y lo elimina
+cartsRouter.delete("/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  try {
+    const carts = await myCartsModel.readCarts();
+    const { cartsList } = carts;
+    if (cartsList.length >= id) {
+      await myCartsModel.deleteCartById(id);
+      res.send("Carrito Eliminado");
+    } else {
+      res.send("No se encontro el carrito a eliminar");
+    }
+  } catch (err) {
+    res.status(400).send("bad request" + err);
+  }
+});
+
+// // Me permite listar todos los productos guardados en el carrito
+cartsRouter.get("/:id/productos", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const cart = await myCartsModel.getCartById(id);
+    const { products } = cart;
+    products.length > 0
+      ? res.send(products)
+      : res.send("Su carrito esta vacio");
+  } catch (err) {
+    res.status(400).send("Bad Request");
+  }
+});
+
 // Para incorporar productos al carrito por su id de producto
 cartsRouter.post("/:id/productos", async (req, res) => {
   try {
@@ -67,8 +64,25 @@ cartsRouter.post("/:id/productos", async (req, res) => {
     res.status(400).send("bad request" + err);
   }
 });
-// cartsRouter.delete("/:id/productos/:id_prod", (req, res) => {
-//   });
+
+// Eliminar un producto del carrito por su id de carrito y de producto
+cartsRouter.delete("/:id/productos/:id_prod", async (req, res) => {
+  try {
+    const cartId = Number(req.params.id);
+    const productId = Number(req.params.id_prod);
+    if (cartId && productId) {
+      const wasDeleted = await myCartsModel.deleteProductToCart(
+        cartId,
+        productId
+      );
+      res.send(wasDeleted);
+    } else {
+      res.status(400).send("Faltan datos para completar la operacion");
+    }
+  } catch (err) {
+    res.status(400).send("Bad request" + err);
+  }
+});
 
 module.exports = {
   cartsRouter,

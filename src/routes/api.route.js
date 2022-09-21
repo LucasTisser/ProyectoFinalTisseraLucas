@@ -5,7 +5,7 @@ const apiRouter = Router();
 
 // Rutas alojadas en routers
 apiRouter.use("/productos", productsRouter);
-apiRouter.use("/carritos", cartsRouter);
+apiRouter.use("/carrito", cartsRouter);
 
 // apiRouter
 module.exports = {

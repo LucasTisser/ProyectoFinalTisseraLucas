@@ -31,8 +31,7 @@ class productsModel {
   }
 
   async createProduct(newProduct) {
-
-    const productsDB  = await this.readProducts();
+    const productsDB = await this.readProducts();
     const id = productsDB.nextId;
     productsDB.nextId++;
     const timeStamp = Date.now();
@@ -57,9 +56,9 @@ class productsModel {
   async getProductById(id) {
     // obtener todos los datos que ya existen en el archivo
     const { productsList } = await this.readProducts();
-    const product = productsList.find((product) => product.id == id );
+    const product = productsList.find((product) => product.id == id);
     // console.log(product)
-    product ? product : "No se encontro el producto a modificar"
+    product ? product : "No se encontro el producto a modificar";
     return product;
   }
 

@@ -15,6 +15,7 @@ class cartModel {
       throw new Error(`Error al guardar: ${error}`);
     }
   }
+
   async readCarts() {
     try {
       const stringCarts = await readFile(this.fileName, "utf-8");
@@ -29,6 +30,7 @@ class cartModel {
       return dataBase;
     }
   }
+
   async createNewCart() {
     const cartDB = await this.readCarts();
     const newCart = {
@@ -45,6 +47,27 @@ class cartModel {
       return false;
     }
   }
+
+  async deleteCartById(id) {
+    const cartDB = await this.readCarts();
+    const { cartsList } = cartDB;
+    const cartIndex = cartsList.findIndex((cart) => cart.id === id);
+
+    if (cartIndex >= 0) {
+      cartsList.splice(cartIndex, 1);
+      const wasSaved = await this.saveCarts(cartDB);
+      return wasSaved;
+    }
+    return false;
+  }
+
+  async getCartById(id) {
+    const { cartsList } = await this.readCarts();
+    const cart = cartsList.find((cart) => cart.id == id);
+    cart ? cart : "No se encontro el carrito";
+    return cart;
+  }
+
   async addProductToCart(cartId, productId) {
     const cartDB = await this.readCarts();
     const { cartsList } = cartDB;
@@ -65,6 +88,38 @@ class cartModel {
       const wasSaved = await this.saveCarts(cartDB);
       if (wasSaved) {
         return product;
+      } else {
+        return false;
+      }
+    }
+  }
+  
+  async deleteProductToCart(cartId, productId) {
+    const cartDB = await this.readCarts();
+    const { cartsList } = cartDB;
+    const cart = cartsList.find((cart) => cart.id == cartId);
+
+    if (cart) {
+      const product = cart.products.find(
+        (product) => product.productId == productId
+      );
+
+      if (product) {
+        if (product.cantidad > 1) {
+          product.cantidad--;
+        } else {
+          const productIndex = cart.products.findIndex(
+            (product) => product.productId == productId
+          );
+          cart.products.splice(productIndex, 1);
+        }
+      } else {
+        return "El producto no se encuentra en su carrito";
+      }
+
+      const wasSaved = await this.saveCarts(cartDB);
+      if (wasSaved) {
+        return "Se ha eliminado un producto";
       } else {
         return false;
       }
